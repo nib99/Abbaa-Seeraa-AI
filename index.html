@@ -1,0 +1,1093 @@
+<!doctype html>
+<html lang="en" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Abbaa Seeraa AI - Ethiopian Legal Assistant</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="/_sdk/data_sdk.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+  <style>
+    * { font-family: 'Plus Jakarta Sans', sans-serif; }
+    
+    .gradient-bg {
+      background: linear-gradient(135deg, #0c1929 0%, #1a365d 50%, #0c1929 100%);
+    }
+    
+    .glass-card {
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    
+    .glass-card-light {
+      background: rgba(255, 255, 255, 0.06);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .glow-amber {
+      box-shadow: 0 0 40px rgba(245, 158, 11, 0.15);
+    }
+    
+    .chat-bubble-ai {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.05) 100%);
+      border-left: 3px solid #f59e0b;
+    }
+    
+    .chat-bubble-user {
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(37, 99, 235, 0.1) 100%);
+      border-right: 3px solid #3b82f6;
+    }
+    
+    .typing-indicator span {
+      animation: typing 1.4s infinite ease-in-out;
+    }
+    
+    .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+    .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+    
+    @keyframes typing {
+      0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+      30% { transform: translateY(-8px); opacity: 1; }
+    }
+    
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes pulse-ring {
+      0% { transform: scale(0.95); opacity: 0.5; }
+      50% { transform: scale(1); opacity: 0.3; }
+      100% { transform: scale(0.95); opacity: 0.5; }
+    }
+    
+    .animate-fade-in { animation: fadeInUp 0.5s ease-out forwards; }
+    .animate-pulse-ring { animation: pulse-ring 2s infinite; }
+    
+    .scrollbar-hide::-webkit-scrollbar { display: none; }
+    .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+    
+    .feature-card:hover { transform: translateY(-4px); }
+    .feature-card { transition: all 0.3s ease; }
+    
+    .input-glow:focus {
+      box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2);
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+      transition: all 0.3s ease;
+    }
+    
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(245, 158, 11, 0.3);
+    }
+    
+    .status-badge {
+      animation: fadeInUp 0.3s ease-out;
+    }
+  </style>
+  <style>body { box-sizing: border-box; }</style>
+ </head>
+ <body class="h-full gradient-bg text-white overflow-auto">
+  <div id="app" class="min-h-full flex flex-col">
+   <!-- Header -->
+   <header class="glass-card border-b border-white/10 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+     <div class="flex items-center gap-3">
+      <div class="relative">
+       <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center glow-amber">
+        <i data-lucide="scale" class="w-6 h-6 text-white"></i>
+       </div>
+       <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-500 rounded-full border-2 border-slate-900 flex items-center justify-center">
+        <i data-lucide="zap" class="w-2 h-2 text-white"></i>
+       </div>
+      </div>
+      <div>
+       <h1 id="header-title" class="text-lg font-bold text-white">Abbaa Seeraa AI</h1>
+       <p id="header-tagline" class="text-xs text-amber-400/80">Ethiopian Legal Intelligence</p>
+      </div>
+     </div>
+     <div class="flex items-center gap-2">
+      <button id="history-btn" class="p-2.5 rounded-xl glass-card hover:bg-white/10 transition-all" title="Case History"> <i data-lucide="history" class="w-5 h-5 text-slate-300"></i> </button> <button id="new-chat-btn" class="p-2.5 rounded-xl glass-card hover:bg-white/10 transition-all" title="New Chat"> <i data-lucide="plus" class="w-5 h-5 text-slate-300"></i> </button>
+     </div>
+    </div>
+   </header><!-- Main Content -->
+   <main class="flex-1 flex flex-col max-w-4xl mx-auto w-full px-4 py-6">
+    <!-- Welcome Screen -->
+    <div id="welcome-screen" class="flex-1 flex flex-col items-center justify-center text-center px-4">
+     <div class="relative mb-8">
+      <div class="absolute inset-0 bg-amber-500/20 rounded-full blur-3xl animate-pulse-ring"></div>
+      <div class="relative w-24 h-24 rounded-2xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center glow-amber">
+       <i data-lucide="scale" class="w-12 h-12 text-white"></i>
+      </div>
+     </div>
+     <h2 id="welcome-title" class="text-3xl font-bold mb-3 bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">How can I assist you today?</h2>
+     <p class="text-slate-400 mb-10 max-w-md">Your AI-powered legal assistant for Ethiopian law. Upload documents, generate legal texts, and get expert guidance.</p><!-- Feature Cards -->
+     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-2xl mb-8">
+      <button onclick="selectFeature('scan')" class="feature-card glass-card-light rounded-2xl p-5 text-left hover:border-amber-500/30 group">
+       <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500/20 to-blue-600/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+        <i data-lucide="scan" class="w-6 h-6 text-blue-400"></i>
+       </div><h3 class="font-semibold text-white mb-1">Scan Document</h3><p class="text-sm text-slate-400">Upload &amp; analyze legal documents with OCR</p></button> <button onclick="selectFeature('generate')" class="feature-card glass-card-light rounded-2xl p-5 text-left hover:border-amber-500/30 group">
+       <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500/20 to-emerald-600/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+        <i data-lucide="file-text" class="w-6 h-6 text-emerald-400"></i>
+       </div><h3 class="font-semibold text-white mb-1">Generate Document</h3><p class="text-sm text-slate-400">Create legal letters, contracts &amp; complaints</p></button> <button onclick="selectFeature('analyze')" class="feature-card glass-card-light rounded-2xl p-5 text-left hover:border-amber-500/30 group">
+       <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500/20 to-purple-600/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+        <i data-lucide="brain" class="w-6 h-6 text-purple-400"></i>
+       </div><h3 class="font-semibold text-white mb-1">Legal Analysis</h3><p class="text-sm text-slate-400">Get insights on Ethiopian law &amp; proclamations</p></button> <button onclick="selectFeature('translate')" class="feature-card glass-card-light rounded-2xl p-5 text-left hover:border-amber-500/30 group">
+       <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500/20 to-amber-600/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+        <i data-lucide="languages" class="w-6 h-6 text-amber-400"></i>
+       </div><h3 class="font-semibold text-white mb-1">Translate</h3><p class="text-sm text-slate-400">Amharic ↔ Afaan Oromo ↔ English</p></button>
+     </div><!-- Language Selector -->
+     <div class="flex items-center gap-3 glass-card rounded-full px-4 py-2">
+      <i data-lucide="globe" class="w-4 h-4 text-slate-400"></i> <select id="language-select" class="bg-transparent text-sm text-slate-300 focus:outline-none cursor-pointer"> <option value="en" class="bg-slate-800">English</option> <option value="am" class="bg-slate-800">አማርኛ (Amharic)</option> <option value="om" class="bg-slate-800">Afaan Oromo</option> </select>
+     </div>
+    </div><!-- Chat Interface -->
+    <div id="chat-screen" class="hidden flex-1 flex flex-col">
+     <!-- Chat Messages -->
+     <div id="chat-messages" class="flex-1 overflow-y-auto scrollbar-hide space-y-4 pb-4">
+      <!-- Messages will be inserted here -->
+     </div><!-- Typing Indicator -->
+     <div id="typing-indicator" class="hidden mb-4 animate-fade-in">
+      <div class="chat-bubble-ai rounded-2xl rounded-bl-md px-5 py-4 max-w-xs">
+       <div class="typing-indicator flex gap-1.5">
+        <span class="w-2 h-2 bg-amber-400 rounded-full"></span> <span class="w-2 h-2 bg-amber-400 rounded-full"></span> <span class="w-2 h-2 bg-amber-400 rounded-full"></span>
+       </div>
+      </div>
+     </div>
+    </div>
+   </main><!-- Input Area -->
+   <div class="glass-card border-t border-white/10 sticky bottom-0">
+    <div class="max-w-4xl mx-auto px-4 py-4">
+     <!-- Document Type Selector (shown for generate feature) -->
+     <div id="doc-type-selector" class="hidden mb-4 flex flex-wrap gap-2">
+      <button onclick="setDocType('complaint')" class="doc-type-btn px-4 py-2 rounded-xl glass-card text-sm text-slate-300 hover:bg-amber-500/20 hover:text-amber-400 transition-all"> <i data-lucide="file-warning" class="w-4 h-4 inline mr-1"></i> Complaint </button> <button onclick="setDocType('contract')" class="doc-type-btn px-4 py-2 rounded-xl glass-card text-sm text-slate-300 hover:bg-amber-500/20 hover:text-amber-400 transition-all"> <i data-lucide="file-signature" class="w-4 h-4 inline mr-1"></i> Contract </button> <button onclick="setDocType('defense')" class="doc-type-btn px-4 py-2 rounded-xl glass-card text-sm text-slate-300 hover:bg-amber-500/20 hover:text-amber-400 transition-all"> <i data-lucide="shield" class="w-4 h-4 inline mr-1"></i> Defense </button> <button onclick="setDocType('appeal')" class="doc-type-btn px-4 py-2 rounded-xl glass-card text-sm text-slate-300 hover:bg-amber-500/20 hover:text-amber-400 transition-all"> <i data-lucide="arrow-up-circle" class="w-4 h-4 inline mr-1"></i> Appeal </button>
+     </div>
+     <div class="flex items-end gap-3">
+      <!-- File Upload Button --> <label class="p-3 rounded-xl glass-card hover:bg-white/10 transition-all cursor-pointer flex-shrink-0"> <i data-lucide="paperclip" class="w-5 h-5 text-slate-400"></i> <input type="file" id="file-input" class="hidden" accept="image/*,.pdf"> </label> <!-- Text Input -->
+      <div class="flex-1 relative">
+       <textarea id="message-input" placeholder="Describe your legal matter..." rows="1" class="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-3.5 pr-14 text-white placeholder-slate-500 focus:outline-none input-glow resize-none max-h-32"></textarea> <button id="send-btn" onclick="sendMessage()" class="absolute right-2 bottom-2 w-10 h-10 btn-primary rounded-xl flex items-center justify-center"> <i data-lucide="send" class="w-5 h-5 text-white"></i> </button>
+      </div>
+     </div><!-- Disclaimer -->
+     <p class="text-xs text-slate-500 text-center mt-3"><i data-lucide="info" class="w-3 h-3 inline mr-1"></i> AI assistance only. Not a substitute for professional legal advice.</p>
+    </div>
+   </div><!-- History Sidebar -->
+   <div id="history-sidebar" class="fixed inset-0 z-50 hidden">
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeHistory()"></div>
+    <div class="absolute right-0 top-0 bottom-0 w-full max-w-sm glass-card border-l border-white/10 overflow-y-auto animate-fade-in">
+     <div class="p-5 border-b border-white/10 flex items-center justify-between sticky top-0 glass-card">
+      <h3 class="font-semibold text-lg">Case History</h3><button onclick="closeHistory()" class="p-2 rounded-lg hover:bg-white/10 transition-all"> <i data-lucide="x" class="w-5 h-5 text-slate-400"></i> </button>
+     </div>
+     <div id="history-list" class="p-4 space-y-3">
+      <!-- History items will be inserted here -->
+     </div>
+    </div>
+   </div>
+  </div>
+  <script>
+    // Default configuration
+    const defaultConfig = {
+      app_title: 'Abbaa Seeraa AI',
+      tagline: 'Ethiopian Legal Intelligence',
+      welcome_message: 'How can I assist you today?',
+      primary_color: '#f59e0b',
+      secondary_color: '#1a365d',
+      text_color: '#ffffff',
+      surface_color: '#0c1929',
+      accent_color: '#3b82f6',
+      api_endpoint: 'https://api.abbaaseeraa.com'
+    };
+
+    // API Configuration
+    const apiConfig = {
+      baseURL: 'http://localhost:8000',
+      timeout: 30000,
+      endpoints: {
+        analyze: '/api/analyze',
+        ocr: '/api/ocr',
+        translate: '/api/translate',
+        generateDocument: '/api/generate-document',
+        extractLegalInfo: '/api/extract-legal-info',
+        health: '/health'
+      }
+    };
+
+    // API Health Check & Configuration
+    async function initializeAPI() {
+      try {
+        const response = await fetch(`${apiConfig.baseURL}${apiConfig.endpoints.health}`, {
+          method: 'GET',
+          timeout: 5000
+        });
+        
+        if (response.ok) {
+          console.log('✅ Backend API connected successfully');
+          return true;
+        }
+      } catch (error) {
+        console.warn('⚠️ Backend API not available. Using simulation mode.');
+        return false;
+      }
+    }
+
+    let apiAvailable = false;
+
+    // Application state
+    let currentFeature = null;
+    let currentDocType = null;
+    let chatMessages = [];
+    let cases = [];
+    let isLoading = false;
+    let currentRecordCount = 0;
+
+    // Ethiopian Law Knowledge Base (simulated)
+    const ethiopianLaw = {
+      proclamations: {
+        civil: 'Civil Code of Ethiopia (Proclamation No. 165/1960)',
+        criminal: 'Criminal Code of Ethiopia (Proclamation No. 414/2004)',
+        family: 'Revised Family Code (Proclamation No. 213/2000)',
+        land: 'Rural Land Administration (Proclamation No. 456/2005)',
+        labor: 'Labour Proclamation (No. 1156/2019)',
+        commercial: 'Commercial Code of Ethiopia (Proclamation No. 166/1960)'
+      },
+      caseTypes: {
+        land: { code: 'land', proclamation: 'Proclamation No. 456/2005', articles: ['Art. 5', 'Art. 7', 'Art. 12'] },
+        family: { code: 'family', proclamation: 'Proclamation No. 213/2000', articles: ['Art. 42', 'Art. 74', 'Art. 98'] },
+        criminal: { code: 'criminal', proclamation: 'Proclamation No. 414/2004', articles: ['Art. 23', 'Art. 539', 'Art. 555'] },
+        contract: { code: 'commercial', proclamation: 'Proclamation No. 166/1960', articles: ['Art. 1675', 'Art. 1731', 'Art. 1808'] },
+        labor: { code: 'labor', proclamation: 'Proclamation No. 1156/2019', articles: ['Art. 26', 'Art. 43', 'Art. 118'] }
+      }
+    };
+
+    // Legal document templates
+    const documentTemplates = {
+      complaint: {
+        title: 'STATEMENT OF CLAIM',
+        sections: ['Court Information', 'Parties', 'Statement of Facts', 'Legal Basis', 'Relief Sought', 'Evidence List']
+      },
+      contract: {
+        title: 'CONTRACT AGREEMENT',
+        sections: ['Parties', 'Recitals', 'Terms and Conditions', 'Obligations', 'Dispute Resolution', 'Signatures']
+      },
+      defense: {
+        title: 'STATEMENT OF DEFENSE',
+        sections: ['Court Reference', 'Defendant Information', 'Response to Claims', 'Legal Arguments', 'Prayer for Relief']
+      },
+      appeal: {
+        title: 'NOTICE OF APPEAL',
+        sections: ['Appellate Court', 'Appellant Information', 'Judgment Appealed', 'Grounds of Appeal', 'Relief Sought']
+      }
+    };
+
+    // Initialize SDKs
+    async function initializeApp() {
+      // Initialize Element SDK
+      if (window.elementSdk) {
+        window.elementSdk.init({
+          defaultConfig,
+          onConfigChange: async (config) => {
+            document.getElementById('header-title').textContent = config.app_title || defaultConfig.app_title;
+            document.getElementById('header-tagline').textContent = config.tagline || defaultConfig.tagline;
+            document.getElementById('welcome-title').textContent = config.welcome_message || defaultConfig.welcome_message;
+          },
+          mapToCapabilities: (config) => ({
+            recolorables: [
+              {
+                get: () => config.primary_color || defaultConfig.primary_color,
+                set: (value) => { config.primary_color = value; window.elementSdk.setConfig({ primary_color: value }); }
+              },
+              {
+                get: () => config.secondary_color || defaultConfig.secondary_color,
+                set: (value) => { config.secondary_color = value; window.elementSdk.setConfig({ secondary_color: value }); }
+              },
+              {
+                get: () => config.text_color || defaultConfig.text_color,
+                set: (value) => { config.text_color = value; window.elementSdk.setConfig({ text_color: value }); }
+              }
+            ],
+            borderables: [],
+            fontEditable: {
+              get: () => config.font_family || 'Plus Jakarta Sans',
+              set: (value) => { config.font_family = value; window.elementSdk.setConfig({ font_family: value }); }
+            },
+            fontSizeable: {
+              get: () => config.font_size || 16,
+              set: (value) => { config.font_size = value; window.elementSdk.setConfig({ font_size: value }); }
+            }
+          }),
+          mapToEditPanelValues: (config) => new Map([
+            ['app_title', config.app_title || defaultConfig.app_title],
+            ['tagline', config.tagline || defaultConfig.tagline],
+            ['welcome_message', config.welcome_message || defaultConfig.welcome_message]
+          ])
+        });
+      }
+
+      // Initialize Data SDK
+      if (window.dataSdk) {
+        const result = await window.dataSdk.init({
+          onDataChanged: (data) => {
+            cases = data;
+            currentRecordCount = data.length;
+            renderHistory();
+          }
+        });
+        
+        if (!result.isOk) {
+          console.error('Failed to initialize Data SDK');
+        }
+      }
+
+      lucide.createIcons();
+    }
+
+    // Feature selection
+    function selectFeature(feature) {
+      currentFeature = feature;
+      document.getElementById('welcome-screen').classList.add('hidden');
+      document.getElementById('chat-screen').classList.remove('hidden');
+      document.getElementById('chat-screen').classList.add('flex');
+      
+      // Show doc type selector for generate feature
+      if (feature === 'generate') {
+        document.getElementById('doc-type-selector').classList.remove('hidden');
+      } else {
+        document.getElementById('doc-type-selector').classList.add('hidden');
+      }
+      
+      // Add initial AI message based on feature
+      const initialMessages = {
+        scan: "📄 Please upload a legal document (image or PDF) and I'll analyze it for you. I can extract text in Amharic, Afaan Oromo, or English.",
+        generate: "✍️ I'll help you create a legal document. First, select the document type above, then describe your case details.",
+        analyze: "⚖️ I'm ready to provide legal analysis based on Ethiopian law. What legal matter would you like me to examine?",
+        translate: "🌍 I can translate legal text between Amharic, Afaan Oromo, and English. Paste your text below."
+      };
+      
+      addAIMessage(initialMessages[feature]);
+    }
+
+    // Set document type
+    function setDocType(type) {
+      currentDocType = type;
+      document.querySelectorAll('.doc-type-btn').forEach(btn => {
+        btn.classList.remove('bg-amber-500/20', 'text-amber-400');
+      });
+      event.target.closest('.doc-type-btn').classList.add('bg-amber-500/20', 'text-amber-400');
+      
+      addAIMessage(`📋 Great! I'll help you create a ${type} document. Please provide the following details:\n\n• Client/Party names\n• Case description\n• Key facts and dates\n• Specific claims or requests`);
+    }
+
+    // Send message
+    async function sendMessage() {
+      const input = document.getElementById('message-input');
+      const message = input.value.trim();
+      
+      if (!message || isLoading) return;
+      
+      input.value = '';
+      input.style.height = 'auto';
+      
+      addUserMessage(message);
+      
+      // Process message based on feature
+      await processUserInput(message);
+    }
+
+    // API Call Wrapper with Error Handling
+    async function callAPI(endpoint, data) {
+      try {
+        const response = await fetch(`${apiConfig.baseURL}${endpoint}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Request-ID': `req-${Date.now()}`
+          },
+          body: JSON.stringify({
+            ...data,
+            language: document.getElementById('language-select').value,
+            timestamp: new Date().toISOString()
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error(`API Error: ${response.status} ${response.statusText}`);
+        }
+
+        return await response.json();
+      } catch (error) {
+        console.error(`API call failed to ${endpoint}:`, error);
+        return null;
+      }
+    }
+
+    // OCR Processing with Real Backend
+    async function processOCRRequest(text) {
+      if (apiAvailable) {
+        const result = await callAPI(apiConfig.endpoints.extractLegalInfo, { 
+          text: text,
+          extractType: 'comprehensive'
+        });
+        
+        if (result && result.extracted_text) {
+          return formatOCRResult(result);
+        }
+      }
+      
+      // Fallback to simulation
+      return generateOCRResponse(text);
+    }
+
+    // Format OCR Result from Real API
+    function formatOCRResult(apiResult) {
+      return `📄 **Document Analysis Complete**
+
+**Detected Language:** ${apiResult.detected_language || 'Mixed'}
+
+**Extracted Information:**
+• **Document Type:** ${apiResult.document_type || 'Legal correspondence'}
+• **Date Identified:** ${apiResult.extracted_date || new Date().toLocaleDateString()}
+• **Key Parties:** ${(apiResult.parties || []).join(', ') || '[Names extracted]'}
+
+**Extracted Text (First 500 chars):**
+"${(apiResult.extracted_text || '').substring(0, 500)}..."
+
+**Legal Classifications:**
+${(apiResult.legal_classifications || []).map(c => `• ${c}`).join('\n')}
+
+**Recommended Actions:**
+1. Review extracted party names
+2. Verify date accuracy
+3. Cross-reference cited proclamations
+
+Would you like me to provide a detailed analysis or generate a response document?`;
+    }
+
+    // AI Legal Analysis with Real Backend
+    async function processLegalAnalysis(query) {
+      if (apiAvailable) {
+        const result = await callAPI(apiConfig.endpoints.analyze, {
+          query: query,
+          analysisType: 'comprehensive',
+          focusArea: detectCaseType(query)
+        });
+        
+        if (result && result.analysis) {
+          return formatAnalysisResult(result);
+        }
+      }
+      
+      // Fallback to simulation
+      return generateLegalAnalysis(query);
+    }
+
+    // Format Analysis Result from Real API
+    function formatAnalysisResult(apiResult) {
+      const caseType = apiResult.case_type || 'contract';
+      const lawRef = ethiopianLaw.caseTypes[caseType] || ethiopianLaw.caseTypes.contract;
+      
+      return `⚖️ **Legal Analysis**
+
+**Query:** ${apiResult.query}
+
+**Applicable Law:**
+${(apiResult.applicable_proclamations || [lawRef.proclamation]).map(p => `• ${p}`).join('\n')}
+
+**Key Articles:**
+${(apiResult.relevant_articles || lawRef.articles).map(a => `• ${a}`).join('\n')}
+
+**Analysis:**
+${apiResult.analysis || 'Analysis processing...'}
+
+**Legal Framework:**
+${apiResult.legal_framework || 'Standard framework applied'}
+
+**Key Considerations:**
+${(apiResult.key_considerations || [
+  'Jurisdictional Issues: Determine the appropriate court',
+  'Limitation Period: Check statute of limitations',
+  'Burden of Proof: Balance of probabilities',
+  'Available Remedies: Injunctive relief, damages'
+]).map(c => `• ${c}`).join('\n')}
+
+**Recommended Steps:**
+${(apiResult.recommended_steps || [
+  'Gather supporting documentation',
+  'Identify and interview witnesses',
+  'Calculate damages if applicable'
+]).map((s, i) => `${i + 1}. ${s}`).join('\n')}
+
+---
+
+Would you like me to draft a legal document based on this analysis?`;
+    }
+
+    // Document Generation with Real Backend
+    async function processDocumentGeneration(details) {
+      if (apiAvailable) {
+        const result = await callAPI(apiConfig.endpoints.generateDocument, {
+          documentType: currentDocType || 'complaint',
+          details: details,
+          caseType: detectCaseType(details),
+          format: 'markdown'
+        });
+        
+        if (result && result.document) {
+          return result.document;
+        }
+      }
+      
+      // Fallback to simulation
+      return generateLegalDocument(details);
+    }
+
+    // Translation with Real Backend
+    async function processTranslation(text, targetLang) {
+      if (apiAvailable) {
+        const result = await callAPI(apiConfig.endpoints.translate, {
+          text: text,
+          targetLanguage: targetLang,
+          sourceLanguage: 'en',
+          domain: 'legal'
+        });
+        
+        if (result && result.translated_text) {
+          return formatTranslationResult(result, targetLang);
+        }
+      }
+      
+      // Fallback to simulation
+      return generateTranslation(text, targetLang);
+    }
+
+    // Format Translation Result from Real API
+    function formatTranslationResult(apiResult, targetLang) {
+      const langName = {
+        am: '🇪🇹 Amharic',
+        om: '🇪🇹 Afaan Oromo',
+        en: '🇬🇧 English'
+      };
+      
+      return `${langName[targetLang] || 'Translated'} **Translation:**
+
+${apiResult.translated_text}
+
+---
+
+**Translation Metadata:**
+• **Confidence:** ${(apiResult.confidence * 100).toFixed(1)}%
+• **Domain:** ${apiResult.domain || 'Legal'}
+• **Equivalents Found:** ${apiResult.legal_equivalents?.length || 0}
+
+**Key Legal Terms Preserved:**
+${(apiResult.legal_equivalents || []).map(term => `• ${term.source} → ${term.target}`).join('\n')}
+
+⚠️ *Please verify critical legal terms with a qualified translator.*`;
+    }
+
+    // Process user input - UNIFIED with API/Fallback
+    async function processUserInput(message) {
+      showTypingIndicator();
+      
+      let response = '';
+      const language = document.getElementById('language-select').value;
+      
+      try {
+        switch (currentFeature) {
+          case 'scan':
+            response = await processOCRRequest(message);
+            break;
+          case 'generate':
+            response = await processDocumentGeneration(message);
+            break;
+          case 'analyze':
+            response = await processLegalAnalysis(message);
+            break;
+          case 'translate':
+            response = await processTranslation(message, language);
+            break;
+          default:
+            response = "Please select a feature to get started.";
+        }
+      } catch (error) {
+        console.error('Error processing input:', error);
+        response = `⚠️ Error processing request. Using fallback analysis.\n\nPlease try again or contact support if the issue persists.`;
+      }
+      
+      hideTypingIndicator();
+      
+      addAIMessage(response);
+      
+      // Save to history if it's a significant interaction
+      if (currentFeature === 'generate' || currentFeature === 'analyze') {
+        await saveCase(message, response);
+      }
+    }
+
+    // Generate OCR response (simulated)
+    function generateOCRResponse(text) {
+      return `📄 **Document Analysis Complete**
+
+**Detected Language:** Mixed (Amharic/English)
+
+**Extracted Information:**
+• **Document Type:** Legal correspondence
+• **Date Identified:** ${new Date().toLocaleDateString()}
+• **Key Parties:** [Names extracted from document]
+
+**Summary:**
+The document appears to be a formal legal notice. I've identified several key legal terms and references to Ethiopian civil code provisions.
+
+**Recommended Actions:**
+1. Review extracted party names
+2. Verify date accuracy
+3. Cross-reference cited proclamations
+
+Would you like me to provide a detailed analysis or generate a response document?`;
+    }
+
+    // Generate legal document
+    async function generateLegalDocument(details) {
+      const template = documentTemplates[currentDocType] || documentTemplates.complaint;
+      const caseType = detectCaseType(details);
+      const lawRef = ethiopianLaw.caseTypes[caseType] || ethiopianLaw.caseTypes.contract;
+      
+      const document = `📋 **${template.title}**
+
+---
+
+**IN THE FEDERAL FIRST INSTANCE COURT**
+**[Appropriate Division]**
+
+**File No.:** _____________
+**Date:** ${new Date().toLocaleDateString('en-ET')}
+
+---
+
+**PARTIES:**
+• **Plaintiff/Applicant:** [Client Name]
+• **Defendant/Respondent:** [Opposing Party]
+
+---
+
+**I. STATEMENT OF FACTS**
+
+${details}
+
+---
+
+**II. LEGAL BASIS**
+
+This claim is grounded in the following Ethiopian legal provisions:
+
+• **${lawRef.proclamation}**
+  - ${lawRef.articles.join('\n  - ')}
+
+• **${ethiopianLaw.proclamations[lawRef.code]}**
+
+---
+
+**III. RELIEF SOUGHT**
+
+WHEREFORE, the Plaintiff respectfully requests this Honorable Court to:
+
+1. Accept this statement of claim
+2. Order the Defendant to [specific relief]
+3. Award costs of this action
+4. Grant any other relief deemed just and equitable
+
+---
+
+**Respectfully submitted,**
+
+_______________________
+[Attorney Name]
+License No.: [Bar Number]
+Date: ${new Date().toLocaleDateString('en-ET')}
+
+---
+
+⚠️ *This is an AI-generated draft. Please review with a licensed attorney before submission.*`;
+
+      return document;
+    }
+
+    // Generate legal analysis
+    function generateLegalAnalysis(query) {
+      const caseType = detectCaseType(query);
+      const lawRef = ethiopianLaw.caseTypes[caseType] || ethiopianLaw.caseTypes.contract;
+      
+      return `⚖️ **Legal Analysis**
+
+**Query:** ${query}
+
+---
+
+**Applicable Law:**
+• **Primary Legislation:** ${lawRef.proclamation}
+• **Relevant Articles:** ${lawRef.articles.join(', ')}
+
+**Legal Framework:**
+
+Under Ethiopian law, this matter falls within the jurisdiction of ${caseType === 'criminal' ? 'criminal courts' : 'civil courts'}. The ${ethiopianLaw.proclamations[lawRef.code]} provides the primary legal framework.
+
+**Key Considerations:**
+
+1. **Jurisdictional Issues:** Determine the appropriate court (Federal vs. Regional)
+2. **Limitation Period:** Check statute of limitations under applicable proclamation
+3. **Burden of Proof:** ${caseType === 'criminal' ? 'Beyond reasonable doubt (prosecution)' : 'Balance of probabilities (claimant)'}
+4. **Available Remedies:** Injunctive relief, damages, specific performance
+
+**Recommended Steps:**
+
+1. Gather supporting documentation
+2. Identify and interview witnesses
+3. Calculate damages if applicable
+4. Consider alternative dispute resolution
+
+**Citation Format:**
+> Based on ${lawRef.proclamation}, ${lawRef.articles[0]}...
+
+---
+
+Would you like me to draft a legal document based on this analysis?`;
+    }
+
+    // Generate translation
+    function generateTranslation(text, targetLang) {
+      const translations = {
+        am: {
+          prefix: '🇪🇹 **Amharic Translation:**\n\n',
+          sample: 'የሕግ ትርጉም እዚህ ይታያል። ይህ ናሙና ጽሑፍ ነው።'
+        },
+        om: {
+          prefix: '🇪🇹 **Afaan Oromo Translation:**\n\n',
+          sample: 'Hiikkaan seeraa asitti mul\'ata. Kun barreeffama fakkeenyaati.'
+        },
+        en: {
+          prefix: '🇬🇧 **English Translation:**\n\n',
+          sample: 'Legal translation appears here. This is sample text.'
+        }
+      };
+      
+      const t = translations[targetLang] || translations.en;
+      
+      return `${t.prefix}${t.sample}
+
+---
+
+**Original Text:**
+"${text.substring(0, 200)}${text.length > 200 ? '...' : ''}"
+
+**Translation Notes:**
+• Legal terminology preserved
+• Context-appropriate phrasing used
+• Technical terms marked for review
+
+⚠️ *Machine translation. Please verify critical legal terms with a qualified translator.*`;
+    }
+
+    // Detect case type from text
+    function detectCaseType(text) {
+      const lower = text.toLowerCase();
+      if (lower.includes('land') || lower.includes('property') || lower.includes('መሬት')) return 'land';
+      if (lower.includes('family') || lower.includes('divorce') || lower.includes('marriage')) return 'family';
+      if (lower.includes('crime') || lower.includes('criminal') || lower.includes('theft')) return 'criminal';
+      if (lower.includes('work') || lower.includes('employment') || lower.includes('labor')) return 'labor';
+      return 'contract';
+    }
+
+    // Add user message to chat
+    function addUserMessage(text) {
+      const container = document.getElementById('chat-messages');
+      const messageDiv = document.createElement('div');
+      messageDiv.className = 'flex justify-end animate-fade-in';
+      messageDiv.innerHTML = `
+        <div class="chat-bubble-user rounded-2xl rounded-br-md px-5 py-3 max-w-[80%]">
+          <p class="text-white whitespace-pre-wrap">${escapeHtml(text)}</p>
+        </div>
+      `;
+      container.appendChild(messageDiv);
+      scrollToBottom();
+    }
+
+    // Add AI message to chat
+    function addAIMessage(text) {
+      const container = document.getElementById('chat-messages');
+      const messageDiv = document.createElement('div');
+      messageDiv.className = 'flex justify-start animate-fade-in';
+      messageDiv.innerHTML = `
+        <div class="chat-bubble-ai rounded-2xl rounded-bl-md px-5 py-4 max-w-[85%]">
+          <div class="flex items-center gap-2 mb-2">
+            <div class="w-6 h-6 rounded-lg bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center">
+              <i data-lucide="scale" class="w-3 h-3 text-white"></i>
+            </div>
+            <span class="text-xs font-medium text-amber-400">Abbaa Seeraa AI</span>
+          </div>
+          <div class="text-slate-200 whitespace-pre-wrap text-sm leading-relaxed">${formatMarkdown(text)}</div>
+        </div>
+      `;
+      container.appendChild(messageDiv);
+      lucide.createIcons();
+      scrollToBottom();
+    }
+
+    // Show/hide typing indicator
+    function showTypingIndicator() {
+      isLoading = true;
+      document.getElementById('typing-indicator').classList.remove('hidden');
+      document.getElementById('send-btn').disabled = true;
+      scrollToBottom();
+    }
+
+    function hideTypingIndicator() {
+      isLoading = false;
+      document.getElementById('typing-indicator').classList.add('hidden');
+      document.getElementById('send-btn').disabled = false;
+    }
+
+    // Scroll chat to bottom
+    function scrollToBottom() {
+      const container = document.getElementById('chat-messages');
+      container.scrollTop = container.scrollHeight;
+    }
+
+    // Save case to history
+    async function saveCase(query, response) {
+      if (!window.dataSdk || currentRecordCount >= 999) {
+        if (currentRecordCount >= 999) {
+          addAIMessage('⚠️ Case history limit reached (999 cases). Please delete older cases to save new ones.');
+        }
+        return;
+      }
+      
+      const caseData = {
+        id: Date.now().toString(),
+        type: currentDocType || currentFeature,
+        title: query.substring(0, 50) + (query.length > 50 ? '...' : ''),
+        content: response,
+        language: document.getElementById('language-select').value,
+        status: 'draft',
+        createdAt: new Date().toISOString(),
+        clientName: 'Client',
+        caseType: detectCaseType(query)
+      };
+      
+      const result = await window.dataSdk.create(caseData);
+      if (!result.isOk) {
+        console.error('Failed to save case');
+      }
+    }
+
+    // Render history sidebar
+    function renderHistory() {
+      const container = document.getElementById('history-list');
+      
+      if (cases.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-10 text-slate-500">
+            <i data-lucide="inbox" class="w-12 h-12 mx-auto mb-3 opacity-50"></i>
+            <p>No case history yet</p>
+          </div>
+        `;
+        lucide.createIcons();
+        return;
+      }
+      
+      const existingItems = new Map([...container.children].map(el => [el.dataset.caseId, el]));
+      
+      cases.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).forEach(caseItem => {
+        const caseId = caseItem.__backendId || caseItem.id;
+        
+        if (existingItems.has(caseId)) {
+          // Update existing item
+          const el = existingItems.get(caseId);
+          el.querySelector('.case-title').textContent = caseItem.title;
+          existingItems.delete(caseId);
+        } else {
+          // Create new item
+          const itemDiv = document.createElement('div');
+          itemDiv.dataset.caseId = caseId;
+          itemDiv.className = 'glass-card-light rounded-xl p-4 hover:bg-white/10 transition-all cursor-pointer group';
+          itemDiv.innerHTML = `
+            <div class="flex items-start justify-between mb-2">
+              <div class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded-lg bg-amber-500/20 flex items-center justify-center">
+                  <i data-lucide="${getFeatureIcon(caseItem.type)}" class="w-4 h-4 text-amber-400"></i>
+                </div>
+                <span class="text-xs px-2 py-1 rounded-full bg-emerald-500/20 text-emerald-400 capitalize">${caseItem.type}</span>
+              </div>
+              <button class="delete-case-btn opacity-0 group-hover:opacity-100 p-1.5 rounded-lg hover:bg-red-500/20 transition-all" data-case-id="${caseId}">
+                <i data-lucide="trash-2" class="w-4 h-4 text-red-400"></i>
+              </button>
+            </div>
+            <h4 class="case-title font-medium text-white mb-1 line-clamp-2">${escapeHtml(caseItem.title)}</h4>
+            <p class="text-xs text-slate-500">${formatDate(caseItem.createdAt)}</p>
+          `;
+          
+          itemDiv.querySelector('.delete-case-btn').addEventListener('click', async (e) => {
+            e.stopPropagation();
+            await deleteCase(caseItem);
+          });
+          
+          container.appendChild(itemDiv);
+        }
+      });
+      
+      // Remove deleted items
+      existingItems.forEach(el => el.remove());
+      
+      lucide.createIcons();
+    }
+
+    // Delete case
+    async function deleteCase(caseItem) {
+      if (!window.dataSdk) return;
+      
+      const btn = document.querySelector(`[data-case-id="${caseItem.__backendId || caseItem.id}"]`);
+      if (btn) {
+        btn.innerHTML = '<i data-lucide="loader" class="w-4 h-4 text-slate-400 animate-spin"></i>';
+        lucide.createIcons();
+      }
+      
+      const result = await window.dataSdk.delete(caseItem);
+      if (!result.isOk) {
+        console.error('Failed to delete case');
+      }
+    }
+
+    // Get feature icon
+    function getFeatureIcon(type) {
+      const icons = {
+        scan: 'scan',
+        generate: 'file-text',
+        analyze: 'brain',
+        translate: 'languages',
+        complaint: 'file-warning',
+        contract: 'file-signature',
+        defense: 'shield',
+        appeal: 'arrow-up-circle'
+      };
+      return icons[type] || 'file';
+    }
+
+    // Format date
+    function formatDate(isoString) {
+      const date = new Date(isoString);
+      return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    }
+
+    // Format markdown-like text
+    function formatMarkdown(text) {
+      return text
+        .replace(/\*\*(.*?)\*\*/g, '<strong class="text-white">$1</strong>')
+        .replace(/\*(.*?)\*/g, '<em>$1</em>')
+        .replace(/^• /gm, '<span class="text-amber-400 mr-1">•</span>')
+        .replace(/^---$/gm, '<hr class="border-white/10 my-3">')
+        .replace(/^> (.*?)$/gm, '<blockquote class="border-l-2 border-amber-500/50 pl-3 italic text-slate-400">$1</blockquote>');
+    }
+
+    // Escape HTML
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // History sidebar controls
+    document.getElementById('history-btn').addEventListener('click', () => {
+      document.getElementById('history-sidebar').classList.remove('hidden');
+    });
+
+    function closeHistory() {
+      document.getElementById('history-sidebar').classList.add('hidden');
+    }
+
+    // New chat
+    document.getElementById('new-chat-btn').addEventListener('click', () => {
+      currentFeature = null;
+      currentDocType = null;
+      chatMessages = [];
+      document.getElementById('chat-messages').innerHTML = '';
+      document.getElementById('chat-screen').classList.add('hidden');
+      document.getElementById('chat-screen').classList.remove('flex');
+      document.getElementById('welcome-screen').classList.remove('hidden');
+      document.getElementById('doc-type-selector').classList.add('hidden');
+    });
+
+    // File upload handler
+    document.getElementById('file-input').addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      
+      if (!currentFeature) {
+        selectFeature('scan');
+      }
+      
+      addUserMessage(`📎 Uploaded: ${file.name}`);
+      
+      showTypingIndicator();
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      hideTypingIndicator();
+      
+      addAIMessage(`✅ **Document Received**
+
+**File:** ${file.name}
+**Size:** ${(file.size / 1024).toFixed(1)} KB
+**Type:** ${file.type || 'Unknown'}
+
+Processing with OCR... This AI demo simulates document analysis.
+
+${generateOCRResponse('')}`);
+      
+      e.target.value = '';
+    });
+
+    // Auto-resize textarea
+    document.getElementById('message-input').addEventListener('input', function() {
+      this.style.height = 'auto';
+      this.style.height = Math.min(this.scrollHeight, 128) + 'px';
+    });
+
+    // Send on Enter (Shift+Enter for new line)
+    document.getElementById('message-input').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+      }
+    });
+
+    // Initialize
+    initializeApp();
+    
+    // Initialize API on page load
+    window.addEventListener('load', async () => {
+      apiAvailable = await initializeAPI();
+      if (apiAvailable) {
+        addInitialNotification('✅ Connected to AI Backend', 'success');
+      } else {
+        addInitialNotification('ℹ️ Using Demo Mode (Backend Not Available)', 'info');
+      }
+    });
+
+    // Add notification system for connection status
+    function addInitialNotification(message, type) {
+      const notif = document.createElement('div');
+      notif.className = `fixed top-20 right-4 px-4 py-3 rounded-lg text-sm font-medium z-40 ${
+        type === 'success' 
+          ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' 
+          : 'bg-blue-500/20 text-blue-300 border border-blue-500/30'
+      }`;
+      notif.innerHTML = `<div class="flex items-center gap-2">${message}</div>`;
+      document.body.appendChild(notif);
+      
+      setTimeout(() => notif.remove(), 4000);
+    }
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e137fb822da8a67',t:'MTc3NDMzMjQ4MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
